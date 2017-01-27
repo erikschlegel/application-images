@@ -4,6 +4,8 @@ ENV hadoop_ver 2.7.3
 ENV spark_ver 2.1.0
 ENV spark_hadoop_ver 2.7
 
+RUN ln -sf /bin/bash /bin/sh
+
 RUN cd /tmp && \
     curl -O http://www.us.apache.org/dist/hadoop/common/hadoop-${hadoop_ver}/hadoop-${hadoop_ver}.tar.gz && \
     curl -O http://www.us.apache.org/dist/spark/spark-${spark_ver}/spark-${spark_ver}-bin-hadoop${spark_hadoop_ver}.tgz && \
