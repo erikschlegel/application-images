@@ -37,8 +37,8 @@ RUN rm -rf /tmp/* && \
 
 RUN pip install boto
 
-RUN mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=com.amazonaws:aws-java-sdk-pom:1.10.34 && \
-    mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=org.apache.hadoop:hadoop-aws:2.7.2 && \
+RUN mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=org.apache.hadoop:hadoop-aws:2.7.2 && \
+    mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=com.amazonaws:aws-java-sdk:1.10.34 && \
     mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=org.apache.spark:spark-streaming-kinesis-asl_2.11:2.1.0 && \
     shopt -s globstar && cp /root/.m2/repository/**/*.jar /opt/spark/jars
 
