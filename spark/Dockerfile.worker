@@ -1,0 +1,2 @@
+FROM srfrnk/spark-base
+ENTRYPOINT ["/bin/bash", "-c", "./start-worker"]
