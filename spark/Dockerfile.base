@@ -28,16 +28,18 @@ RUN mkdir -p /opt && \
 RUN cd /opt/spark/jars && \
     cp /tmp/gcs-connector-latest-hadoop2.jar .
 
-# if numpy is installed on a driver it needs to be installed on all
-# workers, so install it everywhere
 RUN rm -rf /tmp/* && \
     apt-get update && \
-    apt-get upgrade && \
-    apt-get install -y python-numpy python-pip maven && \
+    apt-get -y upgrade && \
+    apt-get install -y apt-utils python-numpy python-pip maven && \
+    curl -sL https://deb.nodesource.com/setup_7.x | bash && \
+    apt-get install -y nodejs build-essential && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 RUN pip install boto
+
+#RUN npm install -g apache-spark-node
 
 RUN mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=org.apache.hadoop:hadoop-aws:2.7.2 && \
     mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=com.amazonaws:aws-java-sdk:1.10.34 && \
