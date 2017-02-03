@@ -1,5 +1,6 @@
 FROM java:openjdk-8-jdk
 
+ENV DEBIAN_FRONTEND noninteractive
 ENV hadoop_ver 2.7.3
 ENV spark_ver 2.1.0
 ENV spark_hadoop_ver 2.7
@@ -28,26 +29,46 @@ RUN mkdir -p /opt && \
 RUN cd /opt/spark/jars && \
     cp /tmp/gcs-connector-latest-hadoop2.jar .
 
+RUN apt-get update && apt-get install -y apt-utils apt-transport-https ca-certificates
+
 RUN rm -rf /tmp/* && \
+    echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 && \
     apt-get update && \
     apt-get -y upgrade && \
-    apt-get install -y apt-utils python-numpy python-pip maven && \
+    apt-get install -y python-numpy python-pip maven nano sbt && \
     curl -sL https://deb.nodesource.com/setup_7.x | bash && \
     apt-get install -y nodejs build-essential && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install boto
-
-#RUN npm install -g apache-spark-node
+RUN pip install boto && \
+    update-java-alternatives -s java-1.8.0-openjdk-amd64
 
 RUN mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=org.apache.hadoop:hadoop-aws:2.7.2 && \
     mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=com.amazonaws:aws-java-sdk:1.10.34 && \
     mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=org.apache.spark:spark-streaming-kinesis-asl_2.11:2.1.0 && \
     shopt -s globstar && cp /root/.m2/repository/**/*.jar /opt/spark/jars
 
+RUN git clone https://github.com/apache/incubator-toree && \
+    cd incubator-toree && \
+    git checkout e8ecd0623c65ad104045b1797fb27f69b8dfc23f  && \
+    make dist && \
+    (make sbt-publishM2 || true) && \
+    cd /
+
+RUN git clone https://github.com/eclairjs/eclairjs && \
+    cd eclairjs/server && \
+    mvn -Dmaven.test.skip=true package && \
+    shopt -s globstar && cp target/*.jar /opt/spark/jars && \
+    cd /
+
+RUN npm install -g eclairjs
+
 ADD log4j.properties /opt/spark/conf/log4j.properties
 ADD start-common.sh start-worker start-master /
 ADD core-site.xml /opt/spark/conf/core-site.xml
 ADD spark-defaults.conf /opt/spark/conf/spark-defaults.conf
 ENV PATH $PATH:/opt/spark/bin
+ENV DEBIAN_FRONTEND teletype
+ENV SPARK_HOME /opt/spark/bin
