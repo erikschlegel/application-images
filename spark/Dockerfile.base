@@ -71,4 +71,4 @@ ADD core-site.xml /opt/spark/conf/core-site.xml
 ADD spark-defaults.conf /opt/spark/conf/spark-defaults.conf
 ENV PATH $PATH:/opt/spark/bin
 ENV DEBIAN_FRONTEND teletype
-ENV SPARK_HOME /opt/spark/bin
+ENV SPARK_HOME /opt/spark
