@@ -17,7 +17,7 @@
 
 FROM srfrnk/spark-base:latest
 
-ENV ZEPPELIN_VER  0.6.2
+ENV ZEPPELIN_VER  0.7.0
 
 RUN cd /tmp && \
     curl -O http://www.us.apache.org/dist/zeppelin/zeppelin-${ZEPPELIN_VER}/zeppelin-${ZEPPELIN_VER}-bin-all.tgz
