@@ -47,23 +47,8 @@ RUN pip install boto && \
 
 RUN mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=org.apache.hadoop:hadoop-aws:2.7.2 && \
     mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=com.amazonaws:aws-java-sdk:1.10.34 && \
-    mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=org.apache.spark:spark-streaming-kinesis-asl_2.11:2.1.0 && \
+    mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=com.microsoft.azure:spark-streaming-eventhubs_2.11:2.0.5 && \
     shopt -s globstar && cp /root/.m2/repository/**/*.jar /opt/spark/jars
-
-RUN git clone https://github.com/apache/incubator-toree && \
-    cd incubator-toree && \
-    git checkout e8ecd0623c65ad104045b1797fb27f69b8dfc23f  && \
-    make dist && \
-    (make sbt-publishM2 || true) && \
-    cd /
-
-RUN git clone https://github.com/eclairjs/eclairjs && \
-    cd eclairjs/server && \
-    mvn -Dmaven.test.skip=true package && \
-    shopt -s globstar && cp target/*.jar /opt/spark/jars && \
-    cd /
-
-RUN npm install -g eclairjs
 
 ADD log4j.properties /opt/spark/conf/log4j.properties
 ADD start-common.sh start-worker start-master /
