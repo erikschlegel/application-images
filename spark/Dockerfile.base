@@ -45,9 +45,7 @@ RUN rm -rf /tmp/* && \
 RUN pip install boto && \
     update-java-alternatives -s java-1.8.0-openjdk-amd64
 
-RUN mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=org.apache.hadoop:hadoop-aws:2.7.2 && \
-    mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=com.amazonaws:aws-java-sdk:1.10.34 && \
-    mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=com.microsoft.azure:spark-streaming-eventhubs_2.11:2.0.5 && \
+RUN mvn dependency:get -DrepoUrl=http://repo1.maven.org/maven2 -Dartifact=com.microsoft.azure:spark-streaming-eventhubs_2.11:2.0.5 && \
     shopt -s globstar && cp /root/.m2/repository/**/*.jar /opt/spark/jars
 
 ADD log4j.properties /opt/spark/conf/log4j.properties
